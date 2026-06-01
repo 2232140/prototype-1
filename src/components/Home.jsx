@@ -85,7 +85,7 @@ export default function Home({ onNavigate }) {
     setAiError('');
     setAiAdvice('');
     try {
-      const advice = await getAIAdvice(settings.apiKey, entries, state);
+      const advice = await getAIAdvice(entries, state);
       setAiAdvice(advice);
     } catch (e) {
       setAiError(e.message);
@@ -114,7 +114,7 @@ export default function Home({ onNavigate }) {
         <div className="divider" />
         <p className="state-advice">💡 {state.advice}</p>
 
-        {settings.apiKey && (
+        {(
           <div className="ai-advice-section">
             <div className="divider" />
             <div className="ai-advice-header">

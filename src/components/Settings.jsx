@@ -3,8 +3,7 @@ import { getSettingsWithDefaults, saveSettings } from '../utils/storage';
 import { supabase } from '../utils/supabase';
 
 export default function Settings({ user }) {
-  const [s, setS]       = useState({ name: '', notificationTime: '21:00', notificationEnabled: false, apiKey: '' });
-  const [showKey, setShowKey] = useState(false);
+  const [s, setS]       = useState({ name: '', notificationTime: '21:00', notificationEnabled: false });
   const [saved, setSaved] = useState(false);
   const [perm, setPerm]   = useState('default');
 
@@ -107,45 +106,11 @@ export default function Settings({ user }) {
         </div>
       </div>
 
-      <div className="card">
-        <h2 className="card-section-title">🤖 AIアドバイス機能</h2>
-        <p className="privacy-text" style={{ marginBottom: 12 }}>
-          OpenAIのAPIキーを設定すると、あなたの記録に合わせた<br />
-          パーソナライズされたアドバイスが受け取れます。
-        </p>
-        <label className="form-label">OpenAI APIキー（任意）</label>
-        <div style={{ position: 'relative' }}>
-          <input
-            type={showKey ? 'text' : 'password'}
-            className="form-input"
-            value={s.apiKey}
-            onChange={(e) => set('apiKey', e.target.value)}
-            placeholder="sk-..."
-            autoComplete="off"
-          />
-          <button
-            type="button"
-            onClick={() => setShowKey((v) => !v)}
-            style={{
-              position: 'absolute', right: 12, top: '50%',
-              transform: 'translateY(-50%)',
-              background: 'none', border: 'none',
-              fontSize: 16, color: 'var(--sub)', padding: 4,
-            }}
-          >
-            {showKey ? '🙈' : '👁'}
-          </button>
-        </div>
-        <p style={{ fontSize: 11, color: 'var(--sub)', marginTop: 8 }}>
-          キーは platform.openai.com で取得できます。このデバイスにのみ保存されます。
-        </p>
-      </div>
-
       <div className="card privacy-card">
         <h2 className="card-section-title">🔒 プライバシー</h2>
         <p className="privacy-text">
-          すべてのデータはこのデバイスのみに保存されます。<br />
-          {s.apiKey ? 'AIアドバイス機能を使用する場合のみ、OpenAI APIへデータが送信されます。' : '外部サーバーへの送信は一切行いません。'}
+          記録データはこのデバイスのみに保存されます。<br />
+          AIアドバイス機能を使用する場合のみ、状態データがサーバーに送信されます。
         </p>
       </div>
 
