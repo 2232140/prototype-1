@@ -689,3 +689,186 @@ button {
   background: var(--teal);
   box-shadow: 0 4px 18px rgba(100,182,172,0.35);
 }
+
+/* ===== LOGIN ===== */
+.login-screen {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.login-hero {
+  background: linear-gradient(135deg, #7C6FCD 0%, #A89FDE 100%);
+  padding: 72px 24px 48px;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 0 40px 40px;
+}
+
+.login-emoji {
+  font-size: 64px;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.login-title {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+.login-card {
+  margin: 28px 20px;
+  background: var(--card);
+  border-radius: var(--r);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-desc {
+  font-size: 14px;
+  color: var(--sub);
+  text-align: center;
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+
+.oauth-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 15px 20px;
+  border-radius: var(--r-sm);
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  transition: transform 0.12s, box-shadow 0.12s, opacity 0.2s;
+}
+.oauth-btn:active { transform: scale(0.97); }
+.oauth-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+.oauth-btn.google {
+  background: #fff;
+  color: #3C4043;
+  border: 1.5px solid #DADCE0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.oauth-btn.google:not(:disabled):hover {
+  box-shadow: 0 3px 12px rgba(0,0,0,0.14);
+}
+
+.oauth-btn.discord {
+  background: #5865F2;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(88,101,242,0.38);
+}
+.oauth-btn.discord:not(:disabled):hover {
+  box-shadow: 0 6px 18px rgba(88,101,242,0.48);
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0,0,0,0.15);
+  border-top-color: #555;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+.btn-spinner.white {
+  border-color: rgba(255,255,255,0.3);
+  border-top-color: #fff;
+}
+
+.login-error {
+  font-size: 13px;
+  color: var(--red);
+  background: #FFF5F5;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  text-align: center;
+}
+
+.login-note {
+  font-size: 11px;
+  color: var(--sub);
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 4px;
+}
+
+/* ===== USER CARD (Settings) ===== */
+.user-card { display: flex; flex-direction: column; gap: 14px; }
+
+.user-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.user-avatar-fallback {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.user-info { flex: 1; overflow: hidden; }
+
+.user-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email {
+  font-size: 12px;
+  color: var(--sub);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-btn {
+  width: 100%;
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--sub);
+  border-radius: var(--r-sm);
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.logout-btn:active { background: #f5f5f5; }

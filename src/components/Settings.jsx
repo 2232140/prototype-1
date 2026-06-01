@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getSettingsWithDefaults, saveSettings } from '../utils/storage';
+import { supabase } from '../utils/supabase';
 
-export default function Settings() {
+export default function Settings({ user }) {
   const [s, setS]       = useState({ name: '', notificationTime: '21:00', notificationEnabled: false, apiKey: '' });
   const [showKey, setShowKey] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -38,6 +39,32 @@ export default function Settings() {
   return (
     <div className="screen settings-screen">
       <h1 className="screen-title">設定</h1>
+
+      {user && (
+        <div className="card user-card">
+          <div className="user-row">
+            {user.user_metadata?.avatar_url ? (
+              <img src={user.user_metadata.avatar_url} alt="avatar" className="user-avatar" />
+            ) : (
+              <div className="user-avatar-fallback">
+                {(user.user_metadata?.full_name || user.email || '?')[0].toUpperCase()}
+              </div>
+            )}
+            <div className="user-info">
+              <div className="user-name">{user.user_metadata?.full_name || user.user_metadata?.name || 'ユーザー'}</div>
+              <div className="user-email">{user.email}</div>
+            </div>
+          </div>
+          <button
+            className="logout-btn"
+            onClick={async () => {
+              if (window.confirm('ログアウトしますか？')) await supabase.auth.signOut();
+            }}
+          >
+            ログアウト
+          </button>
+        </div>
+      )}
 
       <div className="card">
         <h2 className="card-section-title">プロフィール</h2>
