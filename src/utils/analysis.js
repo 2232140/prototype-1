@@ -131,3 +131,69 @@ export const getDailyTip = () => {
   const day = Math.floor(Date.now() / 86400000);
   return TIPS[day % TIPS.length];
 };
+
+const DAY_NAMES = ['日', '月', '火', '水', '木', '金', '土'];
+
+const entriesInRange = (entries, daysAgoFrom, daysAgoTo) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return entries.filter(e => {
+    const d = new Date(e.date);
+    d.setHours(0, 0, 0, 0);
+    const msAgo = today - d;
+    const daysAgo = msAgo / 86400000;
+    return daysAgo >= daysAgoTo && daysAgo <= daysAgoFrom;
+  });
+};
+
+export const getWeeklySummary = (entries) => {
+  const thisWeek = entriesInRange(entries, 6, 0);
+  const lastWeek = entriesInRange(entries, 13, 7);
+
+  if (thisWeek.length === 0) return null;
+
+  const messages = [];
+
+  // 記録日数メッセージ
+  const days = thisWeek.length;
+  if (days === 7)      messages.push({ icon: '🏆', text: '今週は毎日記録できました！本当に素晴らしい！' });
+  else if (days >= 5)  messages.push({ icon: '🔥', text: `今週は${days}日間も記録できました！すごい！` });
+  else if (days >= 3)  messages.push({ icon: '✨', text: `今週は${days}日間、自分と向き合えました。いい調子です。` });
+  else                 messages.push({ icon: '🌱', text: `今週も${days}日間、ちゃんと記録できています。` });
+
+  // 先週比メッセージ
+  if (lastWeek.length >= 2 && thisWeek.length >= 2) {
+    const avg = (arr, key) => arr.reduce((s, e) => s + e[key], 0) / arr.length;
+    const moodDiff = avg(thisWeek, 'mood') - avg(lastWeek, 'mood');
+    const smileyThis = thisWeek.filter(e => e.mood >= 4).length;
+    const smileyLast = lastWeek.filter(e => e.mood >= 4).length;
+    const smileyDiff = smileyThis - smileyLast;
+
+    if (moodDiff > 0.3) {
+      if (smileyDiff > 0) {
+        messages.push({ icon: '😊', text: `先週より笑顔のマークが${smileyDiff}つ増えています！` });
+      } else {
+        messages.push({ icon: '📈', text: '先週より気分のスコアが上がっています！' });
+      }
+    } else if (moodDiff < -0.3) {
+      messages.push({ icon: '💪', text: 'つらい時期もあるけれど、記録できていることが大切な一歩です。' });
+    } else {
+      messages.push({ icon: '😌', text: '先週と同じくらい、安定した一週間でした。' });
+    }
+  } else if (lastWeek.length === 0 && thisWeek.length >= 3) {
+    messages.push({ icon: '🎉', text: 'この調子で記録を続けると、来週との比較も見えてきます！' });
+  }
+
+  // 今週一番よかった日
+  if (thisWeek.length >= 3) {
+    const best = thisWeek.reduce((a, b) =>
+      (a.mood + a.energy > b.mood + b.energy ? a : b)
+    );
+    messages.push({
+      icon: '⭐',
+      text: `今週一番元気だったのは${DAY_NAMES[new Date(best.date).getDay()]}曜日です。`,
+    });
+  }
+
+  return messages.slice(0, 3);
+};

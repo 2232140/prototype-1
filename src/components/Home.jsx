@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getEntries, getTodayEntry, getSettingsWithDefaults } from '../utils/storage';
 import {
   analyzeState, getStreak, calculateImprovement, getDailyTip,
-  MOOD_OPTIONS, ENERGY_OPTIONS,
+  getWeeklySummary, MOOD_OPTIONS, ENERGY_OPTIONS,
 } from '../utils/analysis';
 import { getAIAdvice } from '../utils/aiAdvice';
 
@@ -41,10 +41,11 @@ export default function Home({ onNavigate }) {
     }
   }, []);
 
-  const state      = analyzeState(entries);
-  const streak     = getStreak(entries);
-  const improve    = calculateImprovement(entries);
-  const tip        = getDailyTip();
+  const state         = analyzeState(entries);
+  const streak        = getStreak(entries);
+  const improve       = calculateImprovement(entries);
+  const tip           = getDailyTip();
+  const weeklySummary = getWeeklySummary(entries);
   const now        = new Date();
   const hour       = now.getHours();
   const greeting   = hour < 12 ? 'おはようございます' : hour < 17 ? 'こんにちは' : 'こんばんは';
@@ -191,6 +192,24 @@ export default function Home({ onNavigate }) {
           )}
         </div>
       </div>
+
+      {/* 週次ふりかえりカード */}
+      {weeklySummary && (
+        <div className="card summary-card">
+          <div className="summary-header">
+            <span className="summary-title">📊 今週のふりかえり</span>
+            <span className="summary-badge">自動生成</span>
+          </div>
+          <ul className="summary-list">
+            {weeklySummary.map((m, i) => (
+              <li key={i} className="summary-item">
+                <span className="summary-icon">{m.icon}</span>
+                <span className="summary-text">{m.text}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* 深呼吸エクササイズ */}
       <div className="card">

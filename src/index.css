@@ -872,3 +872,58 @@ button {
   transition: all 0.2s;
 }
 .logout-btn:active { background: #f5f5f5; }
+
+/* ===== WEEKLY SUMMARY CARD ===== */
+.summary-card {
+  background: linear-gradient(135deg, #F0FDF8 0%, #E8F4FD 100%);
+  border: 1.5px solid #BBF7D0;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.summary-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #065F46;
+}
+
+.summary-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: #059669;
+  background: #D1FAE5;
+  padding: 3px 9px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+}
+
+.summary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.summary-icon {
+  font-size: 18px;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+
+.summary-text {
+  font-size: 14px;
+  color: #1F4035;
+  line-height: 1.6;
+  font-weight: 500;
+}
