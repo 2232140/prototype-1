@@ -4,15 +4,19 @@ import {
   analyzeState, getStreak, calculateImprovement, getDailyTip,
   MOOD_OPTIONS, ENERGY_OPTIONS,
 } from '../utils/analysis';
+import { getAIAdvice } from '../utils/aiAdvice';
 
 export default function Home({ onNavigate }) {
   const [entries, setEntries]       = useState([]);
   const [todayEntry, setTodayEntry] = useState(null);
-  const [settings, setSettings]     = useState({ name: '' });
+  const [settings, setSettings]     = useState({ name: '', apiKey: '' });
   const [breathing, setBreathing]   = useState(false);
   const [breathPhase, setBreathPhase] = useState('inhale');
   const [breathRound, setBreathRound] = useState(0);
   const cancelRef = useRef(false);
+  const [aiAdvice, setAiAdvice]     = useState('');
+  const [aiLoading, setAiLoading]   = useState(false);
+  const [aiError, setAiError]       = useState('');
 
   useEffect(() => {
     const all = getEntries();
@@ -75,6 +79,20 @@ export default function Home({ onNavigate }) {
     setBreathRound(0);
   };
 
+  const handleAIAdvice = async () => {
+    setAiLoading(true);
+    setAiError('');
+    setAiAdvice('');
+    try {
+      const advice = await getAIAdvice(settings.apiKey, entries, state);
+      setAiAdvice(advice);
+    } catch (e) {
+      setAiError(e.message);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const breathLabel = { inhale: '吸う (4秒)', hold: '止める (7秒)', exhale: '吐く (8秒)' }[breathPhase];
 
   return (
@@ -94,6 +112,34 @@ export default function Home({ onNavigate }) {
         <p className="state-message">{state.message}</p>
         <div className="divider" />
         <p className="state-advice">💡 {state.advice}</p>
+
+        {settings.apiKey && (
+          <div className="ai-advice-section">
+            <div className="divider" />
+            <div className="ai-advice-header">
+              <span className="ai-advice-label">✨ AIパーソナルアドバイス</span>
+              <button
+                className={`chip-btn primary${aiLoading ? ' loading' : ''}`}
+                onClick={handleAIAdvice}
+                disabled={aiLoading}
+              >
+                {aiLoading ? '生成中…' : aiAdvice ? '再生成' : '聞いてみる'}
+              </button>
+            </div>
+            {aiLoading && (
+              <div className="ai-loading">
+                <span className="ai-spinner" />
+                <span>AIがアドバイスを考えています…</span>
+              </div>
+            )}
+            {aiAdvice && !aiLoading && (
+              <p className="ai-advice-result">🤖 {aiAdvice}</p>
+            )}
+            {aiError && !aiLoading && (
+              <p className="ai-advice-error">⚠️ {aiError}</p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 記録ボタン or 完了表示 */}

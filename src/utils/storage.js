@@ -38,6 +38,7 @@ const DEFAULT_SETTINGS = {
   name: '',
   notificationTime: '21:00',
   notificationEnabled: false,
+  apiKey: '',
 };
 
 export const getSettingsWithDefaults = () => ({
