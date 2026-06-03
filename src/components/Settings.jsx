@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getSettingsWithDefaults, saveSettings } from '../utils/storage';
 import { supabase } from '../utils/supabase';
+import PageHeader from './PageHeader';
 
 export default function Settings({ user }) {
   const [s, setS]       = useState({ name: '', notificationTime: '21:00', notificationEnabled: false });
@@ -37,7 +38,7 @@ export default function Settings({ user }) {
 
   return (
     <div className="screen settings-screen">
-      <h1 className="screen-title">設定</h1>
+      <PageHeader title="設定" subtitle="アプリのカスタマイズ" emoji="⚙️" />
 
       {user && (
         <div className="card user-card">

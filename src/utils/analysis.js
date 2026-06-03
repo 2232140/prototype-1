@@ -112,7 +112,8 @@ export const getLast7Days = (entries) => {
       return ed.getTime() === d.getTime();
     });
     const labels = ['日', '月', '火', '水', '木', '金', '土'];
-    return { date: d, label: i === 6 ? '今日' : labels[d.getDay()], entry };
+    const isToday = i === 6;
+    return { date: d, label: labels[d.getDay()], isToday, entry };
   });
 };
 

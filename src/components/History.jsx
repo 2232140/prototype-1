@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getEntries } from '../utils/storage';
 import { getLast7Days, MOOD_OPTIONS, ENERGY_OPTIONS, calculateImprovement } from '../utils/analysis';
+import PageHeader from './PageHeader';
 
 function BarChart({ days, metric }) {
-  const color  = metric === 'mood' ? '#7C6FCD' : '#64B6AC';
-  const W = 320, H = 130, padL = 16, padR = 16, padT = 8, padB = 28;
+  const baseColor = metric === 'mood' ? '#7C6FCD' : '#64B6AC';
+  const todayColor = metric === 'mood' ? '#A89FDE' : '#95E1D3';
+  const W = 320, H = 140, padL = 16, padR = 16, padT = 8, padB = 36;
   const cW = W - padL - padR;
   const cH = H - padT - padB;
   const slot = cW / 7;
@@ -12,23 +14,33 @@ function BarChart({ days, metric }) {
 
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="bar-chart">
-      {/* grid lines */}
       {[1, 2, 3, 4, 5].map((v) => {
         const y = padT + cH - (v / 5) * cH;
         return <line key={v} x1={padL} x2={W - padR} y1={y} y2={y} stroke="#F0F4F8" strokeWidth="1" />;
       })}
       {days.map((day, i) => {
-        const cx   = padL + (i + 0.5) * slot;
-        const val  = day.entry ? day.entry[metric] : 0;
-        const bH   = (val / 5) * cH || 3;
-        const by   = padT + cH - bH;
+        const cx  = padL + (i + 0.5) * slot;
+        const val = day.entry ? day.entry[metric] : 0;
+        const bH  = (val / 5) * cH || 3;
+        const by  = padT + cH - bH;
+        const fill = day.entry ? (day.isToday ? todayColor : baseColor) : '#E5E7EB';
         return (
           <g key={i}>
             <rect
               x={cx - bW / 2} y={by} width={bW} height={bH}
-              rx={5} fill={day.entry ? color : '#E5E7EB'} opacity={day.entry ? 0.88 : 0.45}
+              rx={5} fill={fill} opacity={day.entry ? 0.9 : 0.4}
             />
-            <text x={cx} y={H - 6} textAnchor="middle" fontSize="10" fill="#9CA3AF">{day.label}</text>
+            <text
+              x={cx} y={H - 18}
+              textAnchor="middle" fontSize="11"
+              fill={day.isToday ? baseColor : '#9CA3AF'}
+              fontWeight={day.isToday ? '800' : '400'}
+            >
+              {day.label}
+            </text>
+            {day.isToday && (
+              <circle cx={cx} cy={H - 6} r={3} fill={baseColor} />
+            )}
           </g>
         );
       })}
@@ -47,10 +59,9 @@ export default function History() {
 
   return (
     <div className="screen history-screen">
-      <h1 className="screen-title">履歴</h1>
+      <PageHeader title="履歴" subtitle="直近7日間の記録" emoji="📊" />
 
-      {/* グラフカード */}
-      <div className="card">
+      <div className="card" style={{ marginTop: 20 }}>
         <div className="tab-row">
           {['mood', 'energy'].map((m) => (
             <button
@@ -70,19 +81,20 @@ export default function History() {
         )}
       </div>
 
-      {/* 日別リスト */}
-      <div className="card">
-        <h2 className="card-section-title">直近7日間の記録</h2>
+      <div className="card" style={{ marginBottom: 16 }}>
+        <h2 className="card-section-title">日別の記録</h2>
         <div className="day-list">
           {[...days].reverse().map((day, i) => (
-            <div key={i} className={`day-row ${!day.entry ? 'no-entry' : ''}`}>
-              <div className="day-date">
-                <span className="day-label">{day.label}</span>
-                <span className="day-mmdd">
-                  {day.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })}
-                </span>
-              </div>
-              {day.entry ? (
+            day.entry ? (
+              <div key={i} className="day-row">
+                <div className="day-date">
+                  <span className="day-label" style={day.isToday ? { color: 'var(--primary)', fontWeight: 800 } : {}}>
+                    {day.isToday ? '今日' : day.label}
+                  </span>
+                  <span className="day-mmdd">
+                    {day.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })}
+                  </span>
+                </div>
                 <div className="day-content">
                   <span className="day-score-emoji">
                     {MOOD_OPTIONS[day.entry.mood - 1]?.emoji}
@@ -92,10 +104,21 @@ export default function History() {
                     <p className="day-memo">"{day.entry.memo}"</p>
                   )}
                 </div>
-              ) : (
-                <span className="day-empty">未記録</span>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div key={i} className="day-row day-row-empty">
+                <div className="day-date">
+                  <span className="day-label">{day.label}</span>
+                  <span className="day-mmdd">
+                    {day.date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })}
+                  </span>
+                </div>
+                <div className="day-empty-content">
+                  <span className="day-empty-icon">＋</span>
+                  <span className="day-empty-text">この日はお休み</span>
+                </div>
+              </div>
+            )
           ))}
         </div>
       </div>

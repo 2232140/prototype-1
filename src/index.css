@@ -927,3 +927,95 @@ button {
   line-height: 1.6;
   font-weight: 500;
 }
+
+/* ===== PAGE HEADER (共通) ===== */
+.page-header {
+  padding: 52px 24px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-radius: 0 0 28px 28px;
+  background: linear-gradient(135deg, #7C6FCD 0%, #A89FDE 100%);
+  color: #fff;
+}
+
+.page-header-sub {
+  font-size: 13px;
+  opacity: 0.82;
+  margin-bottom: 4px;
+}
+
+.page-header-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.page-header-emoji {
+  font-size: 48px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
+}
+
+/* settings / history: ヘッダー分の上部余白を撤廃 */
+.settings-screen { padding: 0 0 16px; }
+.history-screen  { padding-bottom: 16px; }
+
+/* ===== COLLAPSIBLE ===== */
+.collapsible-section { margin-bottom: 0; }
+
+.collapsible-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.collapsible-chevron {
+  font-size: 22px;
+  color: var(--sub);
+  transition: transform 0.2s;
+  display: inline-block;
+  line-height: 1;
+}
+.collapsible-chevron.open { transform: rotate(90deg); }
+
+.collapsible-body {
+  margin-top: 14px;
+  animation: fadeUp 0.2s ease;
+}
+
+/* ===== HISTORY — 未記録行 ===== */
+.day-row-empty {
+  background: #FAFAFA;
+  border: 1.5px dashed #D1D5DB;
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  margin: -2px -2px;
+}
+
+.day-empty-content {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-empty-icon {
+  font-size: 16px;
+  color: #D1D5DB;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.day-empty-text {
+  font-size: 12px;
+  color: #C4C9D4;
+  font-style: italic;
+}
