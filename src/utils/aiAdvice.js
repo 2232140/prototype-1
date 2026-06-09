@@ -11,7 +11,7 @@ export const getAIAdvice = async (entries, state) => {
   const res = await fetch('/api/advice', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ stateTitle: state.title, recentSummary }),
+    body: JSON.stringify({ stateTitle: state.title, recentSummary, moodScore: state.score ?? 3 }),
   });
 
   const data = await res.json().catch(() => ({}));

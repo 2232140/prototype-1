@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getEntries, getTodayEntry, getSettingsWithDefaults } from '../utils/storage';
+import { getEntries, getTodayEntry, getSettingsWithDefaults, getLetters, saveLetter, wroteLetterToday } from '../utils/storage';
 import {
   analyzeState, getStreak, calculateImprovement, getDailyTip,
   getWeeklySummary, MOOD_OPTIONS, ENERGY_OPTIONS,
@@ -30,6 +30,9 @@ export default function Home({ onNavigate }) {
   const [aiAdvice, setAiAdvice]       = useState('');
   const [aiLoading, setAiLoading]     = useState(false);
   const [aiError, setAiError]         = useState('');
+  const [letterText, setLetterText]   = useState('');
+  const [letterSent, setLetterSent]   = useState(false);
+  const [letterDismissed, setLetterDismissed] = useState(false);
 
   useEffect(() => {
     setEntries(getEntries());
@@ -190,7 +193,53 @@ export default function Home({ onNavigate }) {
         </div>
       </div>
 
-      {/* ④ 今週のふりかえり（折りたたみ） */}
+      {/* ④ 手紙機能 */}
+      {(['excellent', 'good'].includes(state.status) && !wroteLetterToday() && !letterDismissed) && (
+        <div className="card letter-write-card">
+          <div className="letter-write-header">
+            <span className="letter-write-title">💌 つらい日の自分へ、一言書きませんか？</span>
+            <button className="letter-dismiss" onClick={() => setLetterDismissed(true)}>✕</button>
+          </div>
+          <p className="letter-write-hint">今日の調子が良いうちに、未来の自分を励ます言葉を残しておきましょう。</p>
+          {!letterSent ? (
+            <>
+              <textarea
+                className="memo-area"
+                value={letterText}
+                onChange={(e) => setLetterText(e.target.value)}
+                placeholder="「大丈夫だよ。あの時も乗り越えられたよね。」など…"
+                rows={3}
+              />
+              <button
+                className="chip-btn primary"
+                style={{ width: '100%', marginTop: 4, padding: '12px' }}
+                onClick={() => { if (letterText.trim()) { saveLetter(letterText); setLetterSent(true); } }}
+                disabled={!letterText.trim()}
+              >
+                手紙を残す 💌
+              </button>
+            </>
+          ) : (
+            <p className="letter-sent-msg">✅ 手紙を残しました。つらい日の自分に届きます。</p>
+          )}
+        </div>
+      )}
+
+      {(['stressed', 'burnout'].includes(state.status) && getLetters().length > 0) && (() => {
+        const letters = getLetters();
+        const letter  = letters[Math.floor(Math.random() * letters.length)];
+        return (
+          <div className="card letter-read-card">
+            <div className="letter-read-title">💌 調子が良かった日の自分より</div>
+            <p className="letter-read-body">「{letter.text}」</p>
+            <p className="letter-read-date">
+              {new Date(letter.date).toLocaleDateString('ja-JP', { month: 'long', day: 'numeric' })} に書きました
+            </p>
+          </div>
+        );
+      })()}
+
+      {/* ⑤ 今週のふりかえり（折りたたみ） */}
       {weeklySummary && (
         <Collapsible title="📊 今週のふりかえり">
           <ul className="summary-list">

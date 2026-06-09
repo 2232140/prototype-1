@@ -14,63 +14,65 @@ export const ENERGY_OPTIONS = [
   { value: 5, emoji: '🔥', label: '最高！',   color: '#64B6AC' },
 ];
 
+const timeAccent = () => {
+  const h = new Date().getHours();
+  if (h >= 22 || h < 6)  return '#3D4B7A'; // 夜: 深いブルー
+  if (h < 11)            return '#F9C66A'; // 朝: ゴールド
+  if (h < 17)            return null;      // 昼: デフォルト
+  return '#F4845F';                        // 夕: サンセット
+};
+
+const grad = (primary, defaultSecondary) => {
+  const accent = timeAccent();
+  return `linear-gradient(135deg, ${primary} 0%, ${accent ?? defaultSecondary} 100%)`;
+};
+
 export const analyzeState = (entries) => {
   if (entries.length === 0) {
     return {
-      status: 'start',
-      emoji: '🌱',
-      title: 'さあ、始めましょう',
+      status: 'start', score: 3,
+      emoji: '🌱', title: 'さあ、始めましょう',
       message: '今日の記録をつけて、あなたの状態を把握していきましょう。',
       advice: '毎日の小さな積み重ねが、大きな変化を生みます。',
-      gradient: 'linear-gradient(135deg, #7C6FCD 0%, #A89FDE 100%)',
+      gradient: grad('#7C6FCD', '#A89FDE'),
       borderColor: '#7C6FCD',
     };
   }
 
-  const recent = entries.slice(-7);
-  const avgMood   = recent.reduce((s, e) => s + e.mood, 0)   / recent.length;
+  const recent    = entries.slice(-7);
+  const avgMood   = recent.reduce((s, e) => s + e.mood,   0) / recent.length;
   const avgEnergy = recent.reduce((s, e) => s + e.energy, 0) / recent.length;
-  const score = (avgMood + avgEnergy) / 2;
+  const score     = (avgMood + avgEnergy) / 2;
 
   if (score >= 4.5) return {
-    status: 'excellent', emoji: '🌟',
-    title: '絶好調です！',
+    status: 'excellent', score, emoji: '🌟', title: '絶好調です！',
     message: '最近とても調子が良いですね。素晴らしい！',
     advice: 'この状態を維持するために、睡眠と水分補給も忘れずに。',
-    gradient: 'linear-gradient(135deg, #64B6AC 0%, #95E1D3 100%)',
-    borderColor: '#64B6AC',
+    gradient: grad('#64B6AC', '#95E1D3'), borderColor: '#64B6AC',
   };
   if (score >= 3.5) return {
-    status: 'good', emoji: '😊',
-    title: '調子は良好です',
+    status: 'good', score, emoji: '😊', title: '調子は良好です',
     message: 'バランスが取れていますね。安定した状態です。',
     advice: '少しだけ自分を労ってあげましょう。好きなことをする時間を作ってみては？',
-    gradient: 'linear-gradient(135deg, #7ECBA1 0%, #B8E4C9 100%)',
-    borderColor: '#7ECBA1',
+    gradient: grad('#7ECBA1', '#B8E4C9'), borderColor: '#7ECBA1',
   };
   if (score >= 2.5) return {
-    status: 'tired', emoji: '😮‍💨',
-    title: '少し疲れが溜まっています',
+    status: 'tired', score, emoji: '😮‍💨', title: '少し疲れが溜まっています',
     message: '頑張りすぎていませんか？あなたの努力はちゃんと伝わっています。',
     advice: '深呼吸を3回してみましょう。今日は少し早めに休むのがおすすめです。',
-    gradient: 'linear-gradient(135deg, #F5A623 0%, #F9C74F 100%)',
-    borderColor: '#F5A623',
+    gradient: grad('#F5A623', '#F9C74F'), borderColor: '#F5A623',
   };
   if (score >= 1.5) return {
-    status: 'stressed', emoji: '😔',
-    title: 'ストレスが溜まっています',
+    status: 'stressed', score, emoji: '😔', title: 'ストレスが溜まっています',
     message: 'つらい時期かもしれませんが、気づけたことが大切な一歩です。',
     advice: '無理をしないでください。小さなことでも「できた」を大切にしましょう。',
-    gradient: 'linear-gradient(135deg, #E07B7B 0%, #F5A5A5 100%)',
-    borderColor: '#E07B7B',
+    gradient: grad('#E07B7B', '#F5A5A5'), borderColor: '#E07B7B',
   };
   return {
-    status: 'burnout', emoji: '🌧️',
-    title: '休息が必要な状態です',
+    status: 'burnout', score, emoji: '🌧️', title: '休息が必要な状態です',
     message: 'よくここまで頑張ってきました。今は休むことが最優先です。',
     advice: '信頼できる人に話してみましょう。あなたは一人じゃありません。',
-    gradient: 'linear-gradient(135deg, #9B7FA6 0%, #C3A8CE 100%)',
-    borderColor: '#9B7FA6',
+    gradient: grad('#9B7FA6', '#C3A8CE'), borderColor: '#9B7FA6',
   };
 };
 

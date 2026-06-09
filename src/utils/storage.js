@@ -44,3 +44,22 @@ export const getSettingsWithDefaults = () => ({
   ...DEFAULT_SETTINGS,
   ...getSettings(),
 });
+
+export const getLetters = () => {
+  try {
+    return JSON.parse(localStorage.getItem('kokoro_letters') || '[]');
+  } catch {
+    return [];
+  }
+};
+
+export const saveLetter = (text) => {
+  const letters = getLetters();
+  letters.push({ text: text.trim(), date: new Date().toISOString(), id: Date.now() });
+  localStorage.setItem('kokoro_letters', JSON.stringify(letters));
+};
+
+export const wroteLetterToday = () => {
+  const today = new Date().toDateString();
+  return getLetters().some(l => new Date(l.date).toDateString() === today);
+};

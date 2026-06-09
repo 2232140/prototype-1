@@ -9,14 +9,21 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: 'AIアドバイス機能は現在利用できません。' });
   }
 
-  const { stateTitle, recentSummary } = req.body;
+  const { stateTitle, recentSummary, moodScore } = req.body;
   if (!stateTitle) {
     return res.status(400).json({ error: '状態データが不足しています。' });
   }
 
+  const score = Number(moodScore) || 3;
+  const systemInstruction =
+    score <= 1.5
+      ? 'あなたは心身の健康を支える、温かくて繊細なアシスタントです。ユーザーは今とてもつらい状態です。アドバイスや提案は一切しないでください。「今日はつらかったね」「よく頑張ってここまできたよ」のように、ただ寄り添う言葉を50文字以内で返してください。'
+      : score <= 2.5
+        ? 'あなたは心身の健康を支える温かみのあるアシスタントです。ユーザーは少し落ち込んでいます。「お水を一杯飲んでみて」「窓を少し開けてみよう」のような、負担が全くない極小さなアクションを1つだけ、50文字以内で提案してください。'
+        : 'あなたは心身の健康を支える温かみのあるアシスタントです。ユーザーの最近の状態を踏まえ、今日すぐ実践できる具体的なアドバイスを1つだけ、50文字以内の日本語で返してください。説明や前置きは不要です。';
+
   const prompt =
-    `あなたは心身の健康を支える温かみのあるアシスタントです。` +
-    `ユーザーの最近の状態を踏まえ、今日すぐ実践できる具体的なアドバイスを1つだけ、50文字以内の日本語で返してください。説明や前置きは不要です。\n\n` +
+    `${systemInstruction}\n\n` +
     `現在の状態：「${stateTitle}」\n` +
     `最近のデータ：${recentSummary ?? 'まだ記録がありません'}`;
 
