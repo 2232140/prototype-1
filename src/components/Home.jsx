@@ -201,37 +201,6 @@ export default function Home({ onNavigate, providerToken = null }) {
       </div>
 
       {/* ④ 手紙機能 */}
-      {(['excellent', 'good'].includes(state.status) && !wroteLetterToday() && !letterDismissed) && (
-        <div className="card letter-write-card">
-          <div className="letter-write-header">
-            <span className="letter-write-title">💌 つらい日の自分へ、一言書きませんか？</span>
-            <button className="letter-dismiss" onClick={() => setLetterDismissed(true)}>✕</button>
-          </div>
-          <p className="letter-write-hint">今日の調子が良いうちに、未来の自分を励ます言葉を残しておきましょう。</p>
-          {!letterSent ? (
-            <>
-              <textarea
-                className="memo-area"
-                value={letterText}
-                onChange={(e) => setLetterText(e.target.value)}
-                placeholder="「大丈夫だよ。あの時も乗り越えられたよね。」など…"
-                rows={3}
-              />
-              <button
-                className="chip-btn primary"
-                style={{ width: '100%', marginTop: 4, padding: '12px' }}
-                onClick={() => { if (letterText.trim()) { saveLetter(letterText); setLetterSent(true); } }}
-                disabled={!letterText.trim()}
-              >
-                手紙を残す 💌
-              </button>
-            </>
-          ) : (
-            <p className="letter-sent-msg">✅ 手紙を残しました。つらい日の自分に届きます。</p>
-          )}
-        </div>
-      )}
-
       {(['tired', 'stressed', 'burnout'].includes(state.status) && getLetters().length > 0) && (() => {
         const letters = getLetters();
         const letter  = letters[Math.floor(Math.random() * letters.length)];
@@ -245,6 +214,31 @@ export default function Home({ onNavigate, providerToken = null }) {
           </div>
         );
       })()}
+
+      <Collapsible title="💌 未来の自分への手紙">
+        {wroteLetterToday() || letterSent ? (
+          <p className="letter-sent-msg">✅ 今日の手紙はもう届いています。また明日！</p>
+        ) : (
+          <>
+            <p className="letter-write-hint">つらい日の自分へ。今の気持ちや励ましを残しておきましょう。</p>
+            <textarea
+              className="memo-area"
+              value={letterText}
+              onChange={(e) => setLetterText(e.target.value)}
+              placeholder="「大丈夫だよ。あの時も乗り越えられたよね。」など…"
+              rows={3}
+            />
+            <button
+              className="chip-btn primary"
+              style={{ width: '100%', marginTop: 8, padding: '12px' }}
+              onClick={() => { if (letterText.trim()) { saveLetter(letterText); setLetterSent(true); } }}
+              disabled={!letterText.trim()}
+            >
+              手紙を残す 💌
+            </button>
+          </>
+        )}
+      </Collapsible>
 
       {/* ⑤ 今週のふりかえり（折りたたみ） */}
       {weeklySummary && (
