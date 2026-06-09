@@ -5,6 +5,7 @@ import {
   getWeeklySummary, MOOD_OPTIONS, ENERGY_OPTIONS,
 } from '../utils/analysis';
 import { getAIAdvice } from '../utils/aiAdvice';
+import { getTodayEvents } from '../utils/calendar';
 
 function Collapsible({ title, children }) {
   const [open, setOpen] = useState(false);
@@ -19,7 +20,7 @@ function Collapsible({ title, children }) {
   );
 }
 
-export default function Home({ onNavigate }) {
+export default function Home({ onNavigate, providerToken = null }) {
   const [entries, setEntries]         = useState([]);
   const [todayEntry, setTodayEntry]   = useState(null);
   const [settings, setSettings]       = useState({ name: '' });
@@ -33,12 +34,18 @@ export default function Home({ onNavigate }) {
   const [letterText, setLetterText]   = useState('');
   const [letterSent, setLetterSent]   = useState(false);
   const [letterDismissed, setLetterDismissed] = useState(false);
+  const [calendarInfo, setCalendarInfo] = useState(null);
 
   useEffect(() => {
     setEntries(getEntries());
     setTodayEntry(getTodayEntry());
     setSettings(getSettingsWithDefaults());
   }, []);
+
+  useEffect(() => {
+    if (!providerToken) return;
+    getTodayEvents(providerToken).then(info => setCalendarInfo(info));
+  }, [providerToken]);
 
   useEffect(() => {
     if (!('Notification' in window) || Notification.permission !== 'granted') return;
@@ -91,7 +98,7 @@ export default function Home({ onNavigate }) {
     setAiError('');
     setAiAdvice('');
     try {
-      const advice = await getAIAdvice(entries, state);
+      const advice = await getAIAdvice(entries, state, calendarInfo);
       setAiAdvice(advice);
     } catch (e) {
       setAiError(e.message);

@@ -43,7 +43,7 @@ export default function App() {
 
   const render = () => {
     switch (screen) {
-      case 'home':     return <Home     onNavigate={setScreen} />;
+      case 'home':     return <Home     onNavigate={setScreen} providerToken={session.provider_token ?? null} />;
       case 'checkin':  return <CheckIn  onNavigate={setScreen} />;
       case 'history':  return <History />;
       case 'settings': return <Settings user={session.user} />;

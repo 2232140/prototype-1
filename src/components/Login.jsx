@@ -10,7 +10,12 @@ export default function Login() {
     setError('');
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: window.location.origin },
+      options: {
+        redirectTo: window.location.origin,
+        scopes: provider === 'google'
+          ? 'https://www.googleapis.com/auth/calendar.readonly'
+          : undefined,
+      },
     });
     if (err) {
       setError(err.message);
