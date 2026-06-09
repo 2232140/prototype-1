@@ -15,6 +15,9 @@ export default function Login() {
         scopes: provider === 'google'
           ? 'https://www.googleapis.com/auth/calendar.readonly'
           : undefined,
+        queryParams: provider === 'google'
+          ? { access_type: 'offline', prompt: 'consent' }
+          : undefined,
       },
     });
     if (err) {

@@ -232,7 +232,7 @@ export default function Home({ onNavigate, providerToken = null }) {
         </div>
       )}
 
-      {(['stressed', 'burnout'].includes(state.status) && getLetters().length > 0) && (() => {
+      {(['tired', 'stressed', 'burnout'].includes(state.status) && getLetters().length > 0) && (() => {
         const letters = getLetters();
         const letter  = letters[Math.floor(Math.random() * letters.length)];
         return (
